@@ -387,22 +387,22 @@ export default function LandingPage() {
               <ul className="space-y-2 text-indigo-300 text-sm">
                 <li className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-cyan-400" />
-                  +1 (555) 123-4567
+                  +1 (813) 369-3340
                 </li>
                 <li className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-cyan-400" />
-                  info@triexpertcredit.com
+                  support@triexpertservice.com
                 </li>
                 <li className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-cyan-400" />
-                  Miami, FL
+                  Tampa, FL
                 </li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-cyan-500/20 pt-8 text-center text-indigo-300 text-sm">
-            <p>© 2024 TriExpert Credit. Todos los derechos reservados.</p>
+            <p>© 2024 TriExpert Services. Todos los derechos reservados.</p>
             <p className="mt-2 text-xs">Este sitio no está afiliado ni respaldado por ninguna agencia de crédito. FCRA Copyright Notice aplicable.</p>
           </div>
         </div>
