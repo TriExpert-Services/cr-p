@@ -20,7 +20,7 @@ export default function OnboardingForm() {
     if (file) data.append('reporte', file);
 
     try {
-      const response = await fetch('https://n8n.ragoxcell.com/webhook/tu-webhook-id', {
+      const response = await fetch('https://n8n.ragoxcell.com/webhook/cr-pro2026', {
         method: 'POST',
         body: data,
       });
