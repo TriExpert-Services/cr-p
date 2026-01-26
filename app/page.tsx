@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Upload, User, MapPin, ShieldCheck, Loader2 } from 'lucide-react';
+import { Upload, User, MapPin, ShieldCheck, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function OnboardingForm() {
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [formData, setFormData] = useState({
     nombre: '', apellido: '', email: '', phone: '',
     ssn: '', dob: '', address: '', city: '', state: '', zip: ''
@@ -13,21 +14,47 @@ export default function OnboardingForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setMessage(null);
     setLoading(true);
+
+    // Validación básica
+    if (!formData.nombre || !formData.apellido || !formData.email) {
+      setMessage({ type: 'error', text: 'Por favor completa los campos obligatorios.' });
+      setLoading(false);
+      return;
+    }
 
     const data = new FormData();
     Object.keys(formData).forEach(key => data.append(key, formData[key as keyof typeof formData]));
     if (file) data.append('reporte', file);
 
     try {
-      const response = await fetch('https://n8n.ragoxcell.com/webhook/cr-pro2026', {
+      console.log('Enviando formulario...');
+      const response = await fetch('/api/submit-form', {
         method: 'POST',
         body: data,
       });
-      
-      if (response.ok) alert("¡Registro exitoso! Iniciando análisis...");
+
+      console.log('Respuesta:', response.status, response.statusText);
+      const result = await response.json();
+
+      if (response.ok) {
+        setMessage({ type: 'success', text: result.message });
+        // Limpiar formulario
+        setFormData({
+          nombre: '', apellido: '', email: '', phone: '',
+          ssn: '', dob: '', address: '', city: '', state: '', zip: ''
+        });
+        setFile(null);
+        setTimeout(() => setMessage(null), 5000);
+      } else {
+        setMessage({ type: 'error', text: result.message || `Error: ${response.status}` });
+        console.error('Error del servidor:', result);
+      }
     } catch (error) {
-      console.error("Error:", error);
+      const errorMsg = error instanceof Error ? error.message : 'Error desconocido';
+      setMessage({ type: 'error', text: `Error de conexión: ${errorMsg}` });
+      console.error('Error:', error);
     } finally {
       setLoading(false);
     }
@@ -46,6 +73,25 @@ export default function OnboardingForm() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          
+          {/* Mensajes de éxito/error */}
+          {message && (
+            <div className={`mb-6 p-4 rounded-md flex items-center gap-3 ${
+              message.type === 'success' 
+                ? 'bg-green-50 border border-green-200' 
+                : 'bg-red-50 border border-red-200'
+            }`}>
+              {message.type === 'success' ? (
+                <CheckCircle className="h-5 w-5 text-green-600" />
+              ) : (
+                <AlertCircle className="h-5 w-5 text-red-600" />
+              )}
+              <span className={message.type === 'success' ? 'text-green-800' : 'text-red-800'}>
+                {message.text}
+              </span>
+            </div>
+          )}
+
           <form className="space-y-6" onSubmit={handleSubmit}>
             
             {/* SECCIÓN 1: DATOS PERSONALES */}
